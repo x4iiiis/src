@@ -56,6 +56,16 @@ public:
   void ComputeLocalInvInertiaTensor();
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+class cRigidDomino : public cRigidBody
+{
+public:
+	double xradius;
+	double yradius;
+	double zradius;
+	void ComputeLocalInvInertiaTensor();
+};
+
 class cRigidPlane : public cRigidBody {
 public:
   void ComputeLocalInvInertiaTensor();
@@ -82,10 +92,29 @@ private:
 class cBoxCollider : public cCollider {
 public:
   double radius;
+  //double xradius;
+  //double yradius;
+  //double zradius;
   cBoxCollider();
 
 private:
 };
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+class cDominoCollider : public cCollider {
+public:
+	//double radius;
+	double xradius;
+	double yradius;
+	double zradius;
+	//double radius[3] = { xradius, yradius, zradius };
+	//Point c; //center point of bounding box
+	cDominoCollider();
+
+private:
+};
+
 
 class cPlaneCollider : public cCollider {
 public:

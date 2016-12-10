@@ -40,7 +40,7 @@ unique_ptr<Entity> CreateParticle (float xPos, float yPos, float zPos, phys::RGB
 	unique_ptr<cShapeRenderer> renderComponent(new cShapeRenderer(cShapeRenderer::BOX));
 	renderComponent->SetColour(c);
 	ent->AddComponent(physComponent);
-	ent->AddComponent(unique_ptr<Component>(new cBoxCollider()));
+	ent->AddComponent(unique_ptr<Component>(new cDominoCollider()));
 	ent->AddComponent(unique_ptr<Component>(move(renderComponent)));
 	return ent;
 }

@@ -96,8 +96,44 @@ namespace collision {
 		return false;
 	}
 
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	bool IsCollidingCheck(std::vector<collisionInfo> &civ, const cDominoCollider &c1, const cDominoCollider &c2)
+	{
+		//Code from Bounding Volumes Slides
+		/*if (a.max[0] < b.min[0] || a.min > b.max[0])
+		{
+			return false;
+		}
+		if (a.max[1] < b.min[1] || a.min[1] > b.max[1])
+		{
+			return false;
+		}
+		if (a.max[2] < b.min[2] || a.min[2] > b.max[2])
+		{
+			return false;
+		}
+		cout << "Domino collides with Domino" << endl;
+		return true; */
+
+		//Code from Bounding Volumes Slides (AABB - AABB)
+		if (c1.xradius < c2.xradius || c1.xradius > c2.xradius)
+		{
+			return false;
+		}
+		if (c1.yradius < c2.yradius || c1.yradius > c2.yradius)
+		{
+			return false;
+		}
+		if (c1.zradius < c2.zradius || c1.zradius > c2.zradius)
+		{
+			return false;
+		}
+		cout << "Domino collides with Domino" << endl;
+		return true;
+	}
+
 	bool IsColliding(std::vector<collisionInfo> &civ, const cCollider &c1, const cCollider &c2) {
-		enum shape { UNKOWN = 0, PLANE, SPHERE, BOX };
+		enum shape { UNKOWN = 0, PLANE, SPHERE, BOX, DOMINO }; ///////////////////////////////////////////////////////////////////////////////////////added domino here, more work needed
 		shape s1 = UNKOWN;
 		shape s2 = UNKOWN;
 		if (dynamic_cast<const cSphereCollider *>(&c1)) {
@@ -109,6 +145,11 @@ namespace collision {
 		else if (dynamic_cast<const cBoxCollider *>(&c1)) {
 			s1 = BOX;
 		}
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////attempting said work^
+		else if (dynamic_cast<const cDominoCollider *>(&c1))
+		{
+			s1 = DOMINO;
+		}
 
 		if (dynamic_cast<const cSphereCollider *>(&c2)) {
 			s2 = SPHERE;
@@ -118,6 +159,11 @@ namespace collision {
 		}
 		else if (dynamic_cast<const cBoxCollider *>(&c2)) {
 			s2 = BOX;
+		}
+		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////attempting said work^
+		else if (dynamic_cast<const cDominoCollider *>(&c2))
+		{
+			s2 = DOMINO;
 		}
 
 		if (!s1 || !s2) {
@@ -134,6 +180,11 @@ namespace collision {
 			else if (s2 == BOX) {
 				return IsCollidingCheck(civ, dynamic_cast<const cPlaneCollider &>(c1), dynamic_cast<const cBoxCollider &>(c2));
 			}
+			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////doesn't work cause I haven't set up plane to domino collisions yet
+			/*else if (s2 == DOMINO)
+			{
+				return IsCollidingCheck(civ, dynamic_cast<const cPlaneCollider &>(c1), dynamic_cast<const cDominoCollider &>(c2));
+			}*/
 			else {
 				cout << "Routing Error" << endl;
 				return false;
@@ -150,6 +201,11 @@ namespace collision {
 			else if (s2 == BOX) {
 				return IsCollidingCheck(civ, dynamic_cast<const cSphereCollider &>(c1), dynamic_cast<const cBoxCollider &>(c2));
 			}
+			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////doesn't work cause I haven't set up sphere to domino collisions yet
+			/*else if (s2 == DOMINO)
+			{
+			return IsCollidingCheck(civ, dynamic_cast<const cSphereCollider &>(c1), dynamic_cast<const cDominoCollider &>(c2));
+			}*/
 			else {
 				cout << "Routing Error" << endl;
 				return false;
@@ -165,7 +221,31 @@ namespace collision {
 			else if (s2 == BOX) {
 				return IsCollidingCheck(civ, dynamic_cast<const cBoxCollider &>(c2), dynamic_cast<const cBoxCollider &>(c1));
 			}
+			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////doesn't work cause I haven't set up box to domino collisions yet
+			/*else if (s2 == DOMINO)
+			{
+			return IsCollidingCheck(civ, dynamic_cast<const cBoxCollider &>(c1), dynamic_cast<const cDominoCollider &>(c2));
+			}*/
 			else {
+				cout << "Routing Error" << endl;
+				return false;
+			}
+		}
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////Domino to domino collisions
+		else if (s1 == DOMINO)
+		{
+			if (s2 == PLANE)
+			{
+				//////////////////////////////////////////////////////////////////////////////////////////////////////////////doesn't work cause I haven't set up plane to domino collisions yet
+				//return IsCollidingCheck(civ, dynamic_cast<const cPlaneCollider &>(c2), dynamic_cast<const cDominoCollider &>(c1));
+			}
+			//Chuck more shite in here for extra collisions but only arsed about domino to domino and domino to plane atm
+			if (s2 == DOMINO)
+			{
+				return IsCollidingCheck(civ, dynamic_cast<const cDominoCollider &>(c2), dynamic_cast<const cDominoCollider &>(c1));
+			}
+			else
+			{
 				cout << "Routing Error" << endl;
 				return false;
 			}
