@@ -82,9 +82,6 @@ private:
 class cBoxCollider : public cCollider {
 public:
   double radius;
-  //double xradius;
-  //double yradius;
-  //double zradius;
   cBoxCollider();
 
 private:

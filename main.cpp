@@ -19,7 +19,7 @@ free_camera freecam;
 target_camera targetcam;
 
 //Use targetcam to begin with (change to 0, using freecam for speed of testing)
-int Cam = 1;
+int Cam = 0;
 
 //Used for rotating freecam based on cursor position
 double xpos = 0.0f;
