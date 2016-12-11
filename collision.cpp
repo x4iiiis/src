@@ -116,15 +116,15 @@ namespace collision {
 		return true; */
 
 		//Code from Bounding Volumes Slides (AABB - AABB)
-		if (c1.xradius < c2.xradius || c1.xradius > c2.xradius)
+		if (c1.width < c2.width || c1.width > c2.width)
 		{
 			return false;
 		}
-		if (c1.yradius < c2.yradius || c1.yradius > c2.yradius)
+		if (c1.height < c2.height || c1.height > c2.height)
 		{
 			return false;
 		}
-		if (c1.zradius < c2.zradius || c1.zradius > c2.zradius)
+		if (c1.depth < c2.depth || c1.depth > c2.depth)
 		{
 			return false;
 		}

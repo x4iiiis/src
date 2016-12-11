@@ -127,22 +127,22 @@ void cRigidCube::ComputeLocalInvInertiaTensor() {
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////No idea what I'm doing here, just copying cube for now
-/*void cRigidDomino::ComputeLocalInvInertiaTensor() {
+void cRigidDomino::ComputeLocalInvInertiaTensor() {
 	if (inversemass == 0) {
 		localInvInertia = dmat3(0.0);
 		worldInvInertia = localInvInertia;
 		return;
 	}
 
-	const double x2 = 4.0 * (radius * radius);
-	const double ix = (x2 + x2) / (inversemass * 12.0);
+	//const double x2 = 4.0 * (radius * radius);
+	//const double ix = (x2 + x2) / (inversemass * 12.0);
 
 	dmat3 localInvInertia = dmat3(0.0);
-	localInvInertia[0][0] = 1.0 / ix;
-	localInvInertia[1][1] = 1.0 / ix;
-	localInvInertia[2][2] = 1.0 / ix;
+	localInvInertia[0][0] = (((1 / 12) * mass) * ((height * height) + (depth * depth))); // / ix;
+	localInvInertia[1][1] = (((1 / 12) * mass) * ((width * width) + (depth * depth))); // / ix;
+	localInvInertia[2][2] = (((1 / 12) * mass) * ((width * width) + (height * height))); // / ix;
 	worldInvInertia = mat4_cast(orientation) * dmat4(localInvInertia) * transpose(mat4_cast(orientation));
-}*/
+}
 
 
 cCollider::cCollider(const std::string &tag) : Component(tag) { GetColliders().push_back(this); }
@@ -158,4 +158,4 @@ void cCollider::Update(double delta) {}
 cSphereCollider::cSphereCollider() : radius(1.0), cCollider("SphereCollider") {}
 cPlaneCollider::cPlaneCollider() : normal(dvec3(0, 1.0, 0)), cCollider("PlaneCollider") {}
 cBoxCollider::cBoxCollider() : radius(1), cCollider("BoxCollider") {}
-cDominoCollider::cDominoCollider() : xradius(1), yradius(2), zradius(0.5), cCollider("DominoCollider") {}
+cDominoCollider::cDominoCollider() : width(1), height(2), depth(0.5), cCollider("DominoCollider") {}

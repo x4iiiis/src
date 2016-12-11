@@ -19,7 +19,7 @@ free_camera freecam;
 target_camera targetcam;
 
 //Use targetcam to begin with (change to 0, using freecam for speed of testing)
-int Cam = 0;
+int Cam = 1;
 
 //Used for rotating freecam based on cursor position
 double xpos = 0.0f;
@@ -36,8 +36,8 @@ unique_ptr<Entity> CreateParticle (float xPos, float yPos, float zPos, phys::RGB
 {
 	unique_ptr<Entity> ent(new Entity());
 	ent->SetPosition(vec3(xPos, yPos, zPos));
-	unique_ptr<Component> physComponent(new cRigidCube());
-	unique_ptr<cShapeRenderer> renderComponent(new cShapeRenderer(cShapeRenderer::BOX));
+	unique_ptr<Component> physComponent(new cRigidDomino());
+	unique_ptr<cShapeRenderer> renderComponent(new cShapeRenderer(cShapeRenderer::DOMINO));
 	renderComponent->SetColour(c);
 	ent->AddComponent(physComponent);
 	ent->AddComponent(unique_ptr<Component>(new cDominoCollider()));
@@ -143,7 +143,7 @@ bool update(float delta_time) {
 	{
 		for (auto &e : SceneList) 
 		{
-			auto b = e->getComponent<cRigidCube>();
+			auto b = e->getComponent<cRigidDomino>();
 
 			if (b != NULL) 
 			{
@@ -204,9 +204,10 @@ bool update(float delta_time) {
 	//while freecam is in use
 	if (Cam == 1)
 	{
-		glfwSetInputMode(renderer::get_window(), GLFW_CURSOR, GLFW_CURSOR_DISABLED); //Mouse cursor is disabled and used to rotate freecam
+		//Mouse cursor is disabled and used to rotate freecam
+		glfwSetInputMode(renderer::get_window(), GLFW_CURSOR, GLFW_CURSOR_DISABLED); 
 
-																					 //Get mouse position for freecam
+		//Get mouse position for freecam
 		double deltax, deltay;
 		glfwGetCursorPos(renderer::get_window(), &deltax, &deltay);
 		double tempx = deltax;

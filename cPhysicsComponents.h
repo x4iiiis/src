@@ -60,9 +60,10 @@ public:
 class cRigidDomino : public cRigidBody
 {
 public:
-	double xradius;
-	double yradius;
-	double zradius;
+	double width;
+	double height;
+	double depth;
+	//double CenterOfMass;
 	void ComputeLocalInvInertiaTensor();
 };
 
@@ -105,9 +106,9 @@ private:
 class cDominoCollider : public cCollider {
 public:
 	//double radius;
-	double xradius;
-	double yradius;
-	double zradius;
+	double width;
+	double height;
+	double depth;
 	//double radius[3] = { xradius, yradius, zradius };
 	//Point c; //center point of bounding box
 	cDominoCollider();
