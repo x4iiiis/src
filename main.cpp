@@ -37,7 +37,7 @@ unique_ptr<Entity> CreateParticle (float xPos, float yPos, float zPos, phys::RGB
 	unique_ptr<Entity> ent(new Entity());
 	ent->SetPosition(vec3(xPos, yPos, zPos));
 	unique_ptr<Component> physComponent(new cRigidDomino());
-	unique_ptr<cShapeRenderer> renderComponent(new cShapeRenderer(cShapeRenderer::DOMINO));
+	unique_ptr<cShapeRenderer> renderComponent(new cShapeRenderer(cShapeRenderer::BOX));
 	renderComponent->SetColour(c);
 	ent->AddComponent(physComponent);
 	ent->AddComponent(unique_ptr<Component>(new cDominoCollider()));
@@ -54,11 +54,23 @@ bool load_content() {
 	floorEnt = unique_ptr<Entity>(new Entity());
 	floorEnt->AddComponent(unique_ptr<Component>(new cPlaneCollider()));
 
-	for (float z = 23; z > 1; z = z - 2)
+
+
+	for (float z = 5; z > 1; z = z - 2)
+	{
+		unique_ptr<Entity> particle = CreateParticle(2.0, 1.0f, z, GREEN);
+		SceneList.push_back(move(particle));
+	}
+
+
+
+
+
+	/*for (float z = 23; z > 1; z = z - 2)
 	{
 		unique_ptr<Entity> particle = CreateParticle(2.0, 1.0f, z, WHITE);
 		SceneList.push_back(move(particle));
-	}	
+	}	*/
 
 
 	////NAPIER TRIANGLE
@@ -141,15 +153,21 @@ bool update(float delta_time) {
 
 	if (glfwGetKey(renderer::get_window(), GLFW_KEY_SPACE)) 
 	{
-		for (auto &e : SceneList) 
+		auto first = SceneList[0]->getComponent<cRigidDomino>();
+		//first->AddAngularForce({ 25, 25, 25 });
+		//first->AddLinearImpulse({ 0, 0, 25 });
+		first->AddLinearForce({ 0, 0, -250 });
+
+
+		/*for (auto &e : SceneList) 
 		{
 			auto b = e->getComponent<cRigidDomino>();
 
 			if (b != NULL) 
 			{
-				b->AddAngularForce({ 0, 0, 5.0 });
+				b->AddAngularForce({ 0, 50, 0.0 });
 			}
-		}
+		}*/
 	}
 
 	while (accumulator > physics_tick)
@@ -158,8 +176,6 @@ bool update(float delta_time) {
 		accumulator -= physics_tick;
 		t += physics_tick;
 	}
-	
-	//Entity shite
 
 
 

@@ -40,6 +40,25 @@ namespace collision {
 		return false;
 	}
 
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////Copying the above for domino and plane
+	bool IsCollidingCheck(std::vector<collisionInfo> &civ, const cDominoCollider &s, const cPlaneCollider &p) {
+		const dvec3 sp = s.GetParent()->GetPosition();
+		const dvec3 pp = p.GetParent()->GetPosition();
+
+		// Calculate a vector from a point on the plane to the center of the sphere
+		const dvec3 vecTemp(sp - pp);
+
+		// Calculate the distance: dot product of the new vector with the plane's normal
+		double distance = dot(vecTemp, p.normal);
+
+		if (distance <= s.height) {
+			civ.push_back({ &s, &p, sp - p.normal * distance, p.normal, s.height - distance });
+			return true;
+		}
+
+		return false;
+	}
+
 	bool IsCollidingCheck(std::vector<collisionInfo> &civ, const cSphereCollider &c1, const cBoxCollider &c2) {
 		const dvec3 sp = c1.GetParent()->GetPosition();
 		const dvec3 bp = c2.GetParent()->GetPosition();
@@ -116,16 +135,19 @@ namespace collision {
 		return true; */
 
 		//Code from Bounding Volumes Slides (AABB - AABB)
-		if (c1.width < c2.width || c1.width > c2.width)
+		if (c1.width < c2.width && c1.width > c2.width)
 		{
+			cout << "Not colliding on width" << endl;
 			return false;
 		}
-		if (c1.height < c2.height || c1.height > c2.height)
+		if (c1.height < c2.height && c1.height > c2.height)
 		{
+			cout << "Not colliding on height" << endl;
 			return false;
 		}
-		if (c1.depth < c2.depth || c1.depth > c2.depth)
+		if (c1.depth < c2.depth && c1.depth > c2.depth)
 		{
+			cout << "Not colliding on depth" << endl;
 			return false;
 		}
 		cout << "Domino collides with Domino" << endl;
@@ -181,10 +203,14 @@ namespace collision {
 				return IsCollidingCheck(civ, dynamic_cast<const cPlaneCollider &>(c1), dynamic_cast<const cBoxCollider &>(c2));
 			}
 			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////doesn't work cause I haven't set up plane to domino collisions yet
-			/*else if (s2 == DOMINO)
+			else if (s2 == DOMINO)
 			{
-				return IsCollidingCheck(civ, dynamic_cast<const cPlaneCollider &>(c1), dynamic_cast<const cDominoCollider &>(c2));
-			}*/
+				cout << "s1 == " << s1 << " & s2 == " << s2 << endl;
+
+				return IsCollidingCheck(civ, dynamic_cast<const cDominoCollider &>(c2), dynamic_cast<const cPlaneCollider &>(c1));
+				//return IsCollidingCheck(civ, dynamic_cast<const cDominoCollider &>(c1), dynamic_cast<const cPlaneCollider &>(c2));
+				//This is causing a break, dunno why
+			}
 			else {
 				cout << "Routing Error" << endl;
 				return false;
@@ -236,12 +262,17 @@ namespace collision {
 		{
 			if (s2 == PLANE)
 			{
+				cout << "s1 == " << s1 << " & s2 == " << s2 << endl;
+
 				//////////////////////////////////////////////////////////////////////////////////////////////////////////////doesn't work cause I haven't set up plane to domino collisions yet
-				//return IsCollidingCheck(civ, dynamic_cast<const cPlaneCollider &>(c2), dynamic_cast<const cDominoCollider &>(c1));
+				return IsCollidingCheck(civ, dynamic_cast<const cDominoCollider &>(c2), dynamic_cast<const cPlaneCollider &>(c1));
+				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////don't think it matters what way round you put the colliders?
 			}
 			//Chuck more shite in here for extra collisions but only arsed about domino to domino and domino to plane atm
 			if (s2 == DOMINO)
 			{
+				cout << "s1 == " << s1 << " & s2 == " << s2 << endl;
+
 				return IsCollidingCheck(civ, dynamic_cast<const cDominoCollider &>(c2), dynamic_cast<const cDominoCollider &>(c1));
 			}
 			else

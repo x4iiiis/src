@@ -60,9 +60,9 @@ public:
 class cRigidDomino : public cRigidBody
 {
 public:
-	double width;
-	double height;
-	double depth;
+	double width = 1;
+	double height = 2;
+	double depth = 0.5;
 	//double CenterOfMass;
 	void ComputeLocalInvInertiaTensor();
 };
