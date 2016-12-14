@@ -54,16 +54,16 @@ bool load_content() {
 	floorEnt = unique_ptr<Entity>(new Entity());
 	floorEnt->AddComponent(unique_ptr<Component>(new cPlaneCollider()));
 
-
+	geometry_builder::create_box(vec3(1.0, 1.0, 1.0));
 
 	for (float z = 5; z > 1; z = z - 2)
 	{
-		unique_ptr<Entity> particle = CreateParticle(2.0, 1.0f, z, GREEN);
+		unique_ptr<Entity> particle = CreateParticle(2.0, 0.0f, z, RED);
 		SceneList.push_back(move(particle));
 	}
 
-
-
+	//unique_ptr<Entity> particle = CreateParticle(2.0, 1.0f, 3, BLUE);
+	//SceneList.push_back(move(particle));
 
 
 	/*for (float z = 23; z > 1; z = z - 2)
@@ -151,14 +151,14 @@ bool update(float delta_time) {
 	static double accumulator = 0.0;
 	accumulator += delta_time;
 
-	if (glfwGetKey(renderer::get_window(), GLFW_KEY_SPACE)) 
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_LEFT)) 
 	{
 		auto first = SceneList[0]->getComponent<cRigidDomino>();
 		//first->AddAngularForce({ 25, 25, 25 });
 		//first->AddLinearImpulse({ 0, 0, 25 });
 		first->AddLinearForce({ 0, 0, -250 });
 
-
+		  
 		/*for (auto &e : SceneList) 
 		{
 			auto b = e->getComponent<cRigidDomino>();
@@ -169,6 +169,43 @@ bool update(float delta_time) {
 			}
 		}*/
 	}
+
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_RIGHT))
+	{
+		auto first = SceneList[0]->getComponent<cRigidDomino>();
+		//first->AddAngularForce({ 25, 25, 25 });
+		//first->AddLinearImpulse({ 0, 0, 25 });
+		first->AddLinearForce({ 0, 0, 250 });
+
+
+		/*for (auto &e : SceneList)
+		{
+		auto b = e->getComponent<cRigidDomino>();
+
+		if (b != NULL)
+		{
+		b->AddAngularForce({ 0, 50, 0.0 });
+		}
+		}*/
+	}
+
+
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_BACKSPACE))
+	{
+		auto first = SceneList[0]->getComponent<cRigidDomino>();
+		//first->AddAngularForce({ 25, 25, 25 });
+		//first->AddLinearImpulse({ 0, 0, 25 });
+		first->AddLinearForce({ 0, 250, 0 });
+	}
+
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_ENTER))
+	{
+		auto first = SceneList[0]->getComponent<cRigidDomino>();
+		//first->AddAngularForce({ 25, 25, 25 });
+		//first->AddLinearImpulse({ 0, 0, 25 });
+		first->AddLinearForce({ 0, -250, 0 });
+	}
+
 
 	while (accumulator > physics_tick)
 	{
@@ -291,6 +328,13 @@ bool update(float delta_time) {
 	phys::Update(delta_time);
 	return true;
 }
+
+
+void getPoints(std::vector<glm::vec3> possyz)
+{
+	static std::vector<glm::vec3> positions = possyz;
+}
+
 
 bool render()
 {

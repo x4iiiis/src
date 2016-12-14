@@ -109,6 +109,14 @@ public:
 	double width;
 	double height;
 	double depth;
+
+	/*vec3 MinX;
+	vec3 MinY;
+	vec3 MinZ;
+
+	vec3 MaxX;
+	vec3 MaxY;
+	vec3 MaxZ;*/
 	//double radius[3] = { xradius, yradius, zradius };
 	//Point c; //center point of bounding box
 	cDominoCollider();

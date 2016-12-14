@@ -156,6 +156,6 @@ cCollider::~cCollider() {
 
 void cCollider::Update(double delta) {}
 cSphereCollider::cSphereCollider() : radius(1.0), cCollider("SphereCollider") {}
-cPlaneCollider::cPlaneCollider() : normal(dvec3(0, 1.0, 0)), cCollider("PlaneCollider") {}
+cPlaneCollider::cPlaneCollider() : normal(dvec3(0, 1, 0)), cCollider("PlaneCollider") {}
 cBoxCollider::cBoxCollider() : radius(1), cCollider("BoxCollider") {}
 cDominoCollider::cDominoCollider() : width(1), height(2), depth(0.5), cCollider("DominoCollider") {}
