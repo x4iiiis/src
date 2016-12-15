@@ -69,11 +69,14 @@ bool load_content() {
 	//SceneList.push_back(move(particle));
 
 
-	/*for (float z = 23; z > 1; z = z - 2)
+	/*unique_ptr<Entity> particle = CreateParticle(freecam.get_position().x, freecam.get_position().y, freecam.get_position().z, BLUE);
+	SceneList.push_back(move(particle));
+*/
+	/*for (float z = 9; z > 1; z = z - 2)
 	{
-		unique_ptr<Entity> particle = CreateParticle(2.0, 1.0f, z, WHITE);
+		unique_ptr<Entity> particle = CreateParticle(2.0, 1.0f, z, GREEN);
 		SceneList.push_back(move(particle));
-	}	*/
+	}*/	
 
 
 	////NAPIER TRIANGLE
@@ -160,6 +163,9 @@ bool update(float delta_time) {
 		//first->AddAngularForce({ 25, 25, 25 });
 		//first->AddLinearImpulse({ 0, 0, 25 });
 		first->AddLinearForce({ 0, 0, -250 });
+		
+		//first->AddAngularForce({ -20, 0, 0 });
+		
 
 		  
 		/*for (auto &e : SceneList) 
@@ -168,7 +174,7 @@ bool update(float delta_time) {
 
 			if (b != NULL) 
 			{
-				b->AddAngularForce({ 0, 50, 0.0 });
+				b->AddAngularForce({ -20, 0, 0.0 });
 			}
 		}*/
 	}
@@ -190,6 +196,15 @@ bool update(float delta_time) {
 		b->AddAngularForce({ 0, 50, 0.0 });
 		}
 		}*/
+	}
+
+	//trying to figure out how to make the domino tip properly
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_K) && Pause == false)
+	{
+		auto first = SceneList[0]->getComponent<cRigidDomino>();
+		//first->AddLinearForce({ 0, 0, -50 });
+		first->AddAngularForce({ -20, 0, 0 });
+		//first->angVelocity += ( -20, 0, 0 );
 	}
 
 
@@ -299,6 +314,10 @@ bool update(float delta_time) {
 
 		//Rotate freecam based on the mouse coordinates
 		freecam.rotate(deltax, deltay);
+		
+		//Trying to make a domino (ideally invisible) so that freecam can collide with objects
+		//auto CamDom = SceneList[2]->getComponent<cRigidDomino>();
+		//CamDom->position = freecam.get_position();
 
 		// set last cursor pos
 		xpos = tempx;
@@ -332,33 +351,31 @@ bool update(float delta_time) {
 		}
 		//Update freecam
 		freecam.update(delta_time);
-
 		phys::SetCameraTarget(freecam.get_target());
 		phys::SetCameraPos(freecam.get_position());
 	}
 
 	if (Cam == 0)
 	{
-		glfwSetInputMode(renderer::get_window(), GLFW_CURSOR, GLFW_CURSOR_NORMAL); //Mouse cursor is disabled and used to rotate freecam
+		//Mouse cursor is disabled and used to rotate freecam
+		glfwSetInputMode(renderer::get_window(), GLFW_CURSOR, GLFW_CURSOR_NORMAL); 
+		//Switch back to targetcam
 		phys::SetCameraTarget(targetcam.get_target());
 		phys::SetCameraPos(targetcam.get_position());
 		targetcam.update(delta_time);
 	}
 
-	for (auto &e : SceneList)
+	if (Pause == false)
 	{
-		e->Update(delta_time);
+		for (auto &e : SceneList)
+		{
+			e->Update(delta_time);
+		}
 	}
-
 	phys::Update(delta_time);
 	return true;
 }
 
-
-void getPoints(std::vector<glm::vec3> possyz)
-{
-	static std::vector<glm::vec3> positions = possyz;
-}
 
 
 bool render()

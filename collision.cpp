@@ -40,7 +40,7 @@ namespace collision {
 		return false;
 	}
 
-	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////Copying the above for domino and plane
+	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////domino and plane collisions
 	bool IsCollidingCheck(std::vector<collisionInfo> &civ, const cDominoCollider &d, const cPlaneCollider &p) {
 		const dvec3 sp = d.GetParent()->GetPosition();
 		const dvec3 pp = p.GetParent()->GetPosition();
@@ -116,31 +116,9 @@ bool IsCollidingCheck(std::vector<collisionInfo> &civ, const cBoxCollider &c1, c
 	return false;
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////Domino to domino collisions
 bool IsCollidingCheck(std::vector<collisionInfo> &civ, const cDominoCollider &c1, const cDominoCollider &c2)
 {
-
-	//Trying to work out all the points of the domino (min/max x y and z)
-
-	/*vec3 MinX1 = c1.GetParent->getPosition() - vec3(		(c1.width / 2),				0,					0				);
-	vec3 MinY1 = c1.GetParent->getPosition() - vec3(			0,				(c1.height / 2),			0				);
-	vec3 MinZ1 = c1.GetParent->getPosition() - vec3(			0,						0,				(c1.depth / 2)		);
-
-	vec3 MaxX1 = c1.GetParent->getPosition() + vec3(		(c1.width / 2),				0,					0				);
-	vec3 MaxY1 = c1.GetParent->getPosition() + vec3(			0,				(c1.height / 2),			0				);
-	vec3 MaxZ1 = c1.GetParent->getPosition() + vec3(			0,						0,				(c1.depth / 2)		);
-
-
-
-	vec3 MinX2 = c2.GetParent->getPosition() - vec3(		(c2.width / 2),				0,					0				);
-	vec3 MinY2 = c2.GetParent->getPosition() - vec3(			0,				(c2.height / 2),			0				);
-	vec3 MinZ2 = c2.GetParent->getPosition() - vec3(			0,						0,				(c2.depth / 2)		);
-
-	vec3 MaxX2 = c2.GetParent->getPosition() + vec3(		(c2.width / 2),				0,					0				);
-	vec3 MaxY2 = c2.GetParent->getPosition() + vec3(			0,				(c2.height / 2),			0				);
-	vec3 MaxZ2 = c2.GetParent->getPosition() + vec3(			0,						0,				(c2.depth / 2)		);*/
-
-
 	const dvec3 p1 = c1.GetParent()->GetPosition();
 	const dvec3 p2 = c2.GetParent()->GetPosition();
 	const dvec3 d = p2 - p1;
@@ -157,7 +135,6 @@ bool IsCollidingCheck(std::vector<collisionInfo> &civ, const cDominoCollider &c1
 	double MaxZ1 = c1.GetParent()->GetPosition().z + (c1.depth / 2);
 
 
-
 	double MinX2 = c2.GetParent()->GetPosition().x - (c2.width / 2);
 	double MinY2 = c2.GetParent()->GetPosition().y - (c2.height / 2);
 	double MinZ2 = c2.GetParent()->GetPosition().z - (c2.depth / 2);
@@ -165,8 +142,6 @@ bool IsCollidingCheck(std::vector<collisionInfo> &civ, const cDominoCollider &c1
 	double MaxX2 = c2.GetParent()->GetPosition().x + (c2.width / 2);
 	double MaxY2 = c2.GetParent()->GetPosition().y + (c2.height / 2);
 	double MaxZ2 = c2.GetParent()->GetPosition().z + (c2.depth / 2);
-
-	double MinMaxes[] = { MinX1, MinY1, MinZ1, MaxX1, MaxY1, MaxZ1, MinX2, MinY2, MinZ2, MaxX2, MaxY2, MaxZ2 };
 
 
 	if (MaxX1 < MinX2 || MinX1 > MaxX2)
@@ -191,8 +166,9 @@ bool IsCollidingCheck(std::vector<collisionInfo> &civ, const cDominoCollider &c1
 	
 	auto depth = sumZ - distance;
 	auto norm = -glm::normalize(d);
-	//auto pos = p1 - norm * ((c1.depth/2) - depth * 0.5f);
-	auto pos = p1;
+	auto pos = p1 - norm * ((c1.depth/2) - (depth * 0.5f));
+	//auto pos = p1 - norm * (c1.depth/2);
+	//auto pos = p1 - norm * ((c2.depth / 2) - (depth * 0.5));
 	civ.push_back({ &c1, &c2, pos, norm, depth });
 
 	return true;
@@ -290,14 +266,11 @@ bool IsCollidingCheck(std::vector<collisionInfo> &civ, const cDominoCollider &c1
 			else if (s2 == BOX) {
 				return IsCollidingCheck(civ, dynamic_cast<const cPlaneCollider &>(c1), dynamic_cast<const cBoxCollider &>(c2));
 			}
-			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////doesn't work cause I haven't set up plane to domino collisions yet
+			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////plane to domino collisions
 			else if (s2 == DOMINO)
 			{
-				cout << "s1 == " << s1 << " & s2 == " << s2 << endl;
-
+				//cout << "s1 == " << s1 << " & s2 == " << s2 << endl;
 				return IsCollidingCheck(civ, dynamic_cast<const cDominoCollider &>(c2), dynamic_cast<const cPlaneCollider &>(c1));
-				//return IsCollidingCheck(civ, dynamic_cast<const cDominoCollider &>(c1), dynamic_cast<const cPlaneCollider &>(c2));
-				//This is causing a break, dunno why
 			}
 			else {
 				cout << "Routing Error" << endl;
@@ -335,32 +308,22 @@ bool IsCollidingCheck(std::vector<collisionInfo> &civ, const cDominoCollider &c1
 			else if (s2 == BOX) {
 				return IsCollidingCheck(civ, dynamic_cast<const cBoxCollider &>(c2), dynamic_cast<const cBoxCollider &>(c1));
 			}
-			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////doesn't work cause I haven't set up box to domino collisions yet
-			/*else if (s2 == DOMINO)
-			{
-			return IsCollidingCheck(civ, dynamic_cast<const cBoxCollider &>(c1), dynamic_cast<const cDominoCollider &>(c2));
-			}*/
 			else {
 				cout << "Routing Error" << endl;
 				return false;
 			}
 		}
-		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////Domino to domino collisions
+		///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////Domino to domino/plane collisions
 		else if (s1 == DOMINO)
 		{
 			if (s2 == PLANE)
 			{
-				cout << "s1 == " << s1 << " & s2 == " << s2 << endl;
-
-				//////////////////////////////////////////////////////////////////////////////////////////////////////////////doesn't work cause I haven't set up plane to domino collisions yet
+				//cout << "s1 == " << s1 << " & s2 == " << s2 << endl;
 				return IsCollidingCheck(civ, dynamic_cast<const cDominoCollider &>(c2), dynamic_cast<const cPlaneCollider &>(c1));
-				///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////don't think it matters what way round you put the colliders?
 			}
-			//Chuck more shite in here for extra collisions but only arsed about domino to domino and domino to plane atm
 			if (s2 == DOMINO)
 			{
-				cout << "s1 == " << s1 << " & s2 == " << s2 << endl;
-
+				//cout << "s1 == " << s1 << " & s2 == " << s2 << endl;
 				return IsCollidingCheck(civ, dynamic_cast<const cDominoCollider &>(c2), dynamic_cast<const cDominoCollider &>(c1));
 			}
 			else
