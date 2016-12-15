@@ -12,9 +12,7 @@ using namespace graphics_framework;
 using namespace glm;
 #define physics_tick 1.0 / 60.0
 
-
-
-
+//Camera declaration
 free_camera freecam;
 target_camera targetcam;
 
@@ -24,6 +22,11 @@ int Cam = 1;
 //Used for rotating freecam based on cursor position
 double xpos = 0.0f;
 double ypos = 0.0f;
+
+//Pausing the physics
+bool Pause = false;
+
+
 
 
 
@@ -151,7 +154,7 @@ bool update(float delta_time) {
 	static double accumulator = 0.0;
 	accumulator += delta_time;
 
-	if (glfwGetKey(renderer::get_window(), GLFW_KEY_LEFT)) 
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_LEFT) && Pause == false)
 	{
 		auto first = SceneList[0]->getComponent<cRigidDomino>();
 		//first->AddAngularForce({ 25, 25, 25 });
@@ -170,7 +173,7 @@ bool update(float delta_time) {
 		}*/
 	}
 
-	if (glfwGetKey(renderer::get_window(), GLFW_KEY_RIGHT))
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_RIGHT) && Pause == false)
 	{
 		auto first = SceneList[0]->getComponent<cRigidDomino>();
 		//first->AddAngularForce({ 25, 25, 25 });
@@ -190,7 +193,7 @@ bool update(float delta_time) {
 	}
 
 
-	if (glfwGetKey(renderer::get_window(), GLFW_KEY_BACKSPACE))
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_BACKSPACE) && Pause == false)
 	{
 		auto first = SceneList[0]->getComponent<cRigidDomino>();
 		//first->AddAngularForce({ 25, 25, 25 });
@@ -198,7 +201,7 @@ bool update(float delta_time) {
 		first->AddLinearForce({ 0, 250, 0 });
 	}
 
-	if (glfwGetKey(renderer::get_window(), GLFW_KEY_ENTER))
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_ENTER) && Pause == false)
 	{
 		auto first = SceneList[0]->getComponent<cRigidDomino>();
 		//first->AddAngularForce({ 25, 25, 25 });
@@ -207,13 +210,35 @@ bool update(float delta_time) {
 	}
 
 
-	while (accumulator > physics_tick)
+
+
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_SPACE))
 	{
-		UpdatePhysics(t, physics_tick);
-		accumulator -= physics_tick;
-		t += physics_tick;
+		if (Pause == false)
+		{
+			Pause = true;
+			cout << "Physics paused. Press R to resume" << endl;
+		}
 	}
 
+	if (glfwGetKey(renderer::get_window(), GLFW_KEY_R))
+	{
+		if (Pause == true)
+		{
+			Pause = false;
+			cout << "Physics resumed" << endl;
+		}
+	}
+
+	if (Pause == false)
+	{
+		while (accumulator > physics_tick)
+		{
+			UpdatePhysics(t, physics_tick);
+			accumulator -= physics_tick;
+			t += physics_tick;
+		}
+	}
 
 
 	if (glfwGetKey(renderer::get_window(), GLFW_KEY_1))
