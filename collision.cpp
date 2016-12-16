@@ -119,6 +119,7 @@ bool IsCollidingCheck(std::vector<collisionInfo> &civ, const cBoxCollider &c1, c
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////Domino to domino collisions
 bool IsCollidingCheck(std::vector<collisionInfo> &civ, const cDominoCollider &c1, const cDominoCollider &c2)
 {
+	//Get the positions of each collider and find the distance between them
 	const dvec3 p1 = c1.GetParent()->GetPosition();
 	const dvec3 p2 = c2.GetParent()->GetPosition();
 	const dvec3 d = p2 - p1;
@@ -126,6 +127,7 @@ bool IsCollidingCheck(std::vector<collisionInfo> &civ, const cDominoCollider &c1
 	const double distance = glm::length(d);
 	const double sumZ = c1.depth + c2.depth;
 	
+	//Get the minimum and maximum X, Y and Z values of each collider
 	double MinX1 = c1.GetParent()->GetPosition().x - (c1.width / 2);
 	double MinY1 = c1.GetParent()->GetPosition().y - (c1.height / 2);
 	double MinZ1 = c1.GetParent()->GetPosition().z - (c1.depth / 2);
@@ -164,58 +166,13 @@ bool IsCollidingCheck(std::vector<collisionInfo> &civ, const cDominoCollider &c1
 	cout << "Domino collision occurs" << endl;
 
 	
+	//Move the colliders back to where they should be after the collision
 	auto depth = sumZ - distance;
 	auto norm = -glm::normalize(d);
 	auto pos = p1 - norm * ((c1.depth/2) - (depth * 0.5f));
-	//auto pos = p1 - norm * (c1.depth/2);
-	//auto pos = p1 - norm * ((c2.depth / 2) - (depth * 0.5));
 	civ.push_back({ &c1, &c2, pos, norm, depth });
 
 	return true;
-
-
-		//Code from Bounding Volumes Slides
-		/*if (a.max[x] < b.min[x] || a.min > b.max[x])
-		{
-			return false;
-		}
-		if (a.max[y] < b.min[y] || a.min[y] > b.max[y])
-		{
-			return false;
-		}
-		if (a.max[z] < b.min[z] || a.min[z] > b.max[z])
-		{
-			return false;
-		}
-		cout << "Domino collides with Domino" << endl;
-		return true; */
-
-
-
-
-
-
-
-		//Code from Bounding Volumes Slides (AABB - AABB)
-		/*if (c1.width < c2.width || c1.width > c2.width)
-		{
-			c1.GetParent()->GetPosition().x;
-
-			cout << "Not colliding on width" << endl;
-			return false;
-		}
-		if (c1.height < c2.height || c1.height > c2.height)
-		{ 
-			cout << "Not colliding on height" << endl;
-			return false;
-		}
-		if (c1.depth < c2.depth || c1.depth > c2.depth)
-		{
-			cout << "Not colliding on depth" << endl;
-			return false;
-		}
-		cout << "Domino collides with Domino" << endl;
-		return true;*/
 	}
 
 	bool IsColliding(std::vector<collisionInfo> &civ, const cCollider &c1, const cCollider &c2) {
@@ -288,7 +245,7 @@ bool IsCollidingCheck(std::vector<collisionInfo> &civ, const cDominoCollider &c1
 			else if (s2 == BOX) {
 				return IsCollidingCheck(civ, dynamic_cast<const cSphereCollider &>(c1), dynamic_cast<const cBoxCollider &>(c2));
 			}
-			/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////doesn't work cause I haven't set up sphere to domino collisions yet
+			/////////////////////////////////////////////////////////////////////////////////////doesn't work cause I haven't set up sphere to domino collisions yet
 			/*else if (s2 == DOMINO)
 			{
 			return IsCollidingCheck(civ, dynamic_cast<const cSphereCollider &>(c1), dynamic_cast<const cDominoCollider &>(c2));

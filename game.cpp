@@ -24,7 +24,7 @@ Entity *Component::GetParent() const { return Ent_; }
 Entity::Entity() {
 	visible_ = true;
 	changed_ = true;
-	//scale_ = vec3(1.0f, 1.0f, 1.0f);
+	//scale_ = vec3(1.0f, 1.0f, 1.0f);      Changed this to the below to make the objects the right size/shape
 	scale_ = vec3(1.0, 2.0, 0.5);
 	position_ = vec3(0.0f, 0.0f, 0.0f);
 	rotation_ = quat();

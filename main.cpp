@@ -26,15 +26,13 @@ double ypos = 0.0f;
 //Pausing the physics
 bool Pause = false;
 
-
-
-
-
-//Entity shite
+//Used for storing all objects in the scene
 static vector<unique_ptr<Entity>> SceneList;
 
+//Setting up the floor entity
 static unique_ptr<Entity> floorEnt;
 
+//Used when creating a new particle
 unique_ptr<Entity> CreateParticle (float xPos, float yPos, float zPos, phys::RGBAInt32 c)
 {
 	unique_ptr<Entity> ent(new Entity());
@@ -54,16 +52,18 @@ unique_ptr<Entity> CreateParticle (float xPos, float yPos, float zPos, phys::RGB
 bool load_content() {
 	phys::Init();
 
+	//Creating the floor and adding a plane collider to it
 	floorEnt = unique_ptr<Entity>(new Entity());
 	floorEnt->AddComponent(unique_ptr<Component>(new cPlaneCollider()));
 
-	geometry_builder::create_box(vec3(1.0, 1.0, 1.0));
-
+	//Add 2 red dominoes to the scene on the Z axis
 	for (float z = 5; z > 1; z = z - 2)
 	{
 		unique_ptr<Entity> particle = CreateParticle(2.0, 0.0f, z, RED);
 		SceneList.push_back(move(particle));
 	}
+
+	//The following is used for testing or is unused objects that I wanted to use in the simulation:
 
 	//unique_ptr<Entity> particle = CreateParticle(2.0, 1.0f, 3, BLUE);
 	//SceneList.push_back(move(particle));
@@ -144,89 +144,48 @@ bool update(float delta_time) {
 	static float rot = 0.0f;
 	rot += 0.2f * delta_time;
 
-	//Code for spinning camera that was here by default
-	//phys::SetCameraPos(rotate(vec3(15.0f, 12.0f, 15.0f), rot, vec3(0, 1.0f, 0)));
-	//phys::SetCameraTarget(targetcam.get_target());
-	//phys::SetCameraPos(targetcam.get_position());
-
-
-
-
-	//ahghajkghajghjhagjahklhajglajgklaghlkaghajghjahgkhakghlakhghalkghklahlkghakhglkahlakhglkahgklhalghkhalag
 	static double t = 0.0;
 	static double accumulator = 0.0;
 	accumulator += delta_time;
 
+	//Apply a linear force to make the object move along the Z axis when the LEFT key is pressed (if pause isn't active)
 	if (glfwGetKey(renderer::get_window(), GLFW_KEY_LEFT) && Pause == false)
 	{
 		auto first = SceneList[0]->getComponent<cRigidDomino>();
-		//first->AddAngularForce({ 25, 25, 25 });
-		//first->AddLinearImpulse({ 0, 0, 25 });
 		first->AddLinearForce({ 0, 0, -250 });
-		
-		//first->AddAngularForce({ -20, 0, 0 });
-		
-
-		  
-		/*for (auto &e : SceneList) 
-		{
-			auto b = e->getComponent<cRigidDomino>();
-
-			if (b != NULL) 
-			{
-				b->AddAngularForce({ -20, 0, 0.0 });
-			}
-		}*/
 	}
 
+	//Apply a linear force to make the object move along the Z axis when the RIGHT key is pressed (if pause isn't active)
 	if (glfwGetKey(renderer::get_window(), GLFW_KEY_RIGHT) && Pause == false)
 	{
 		auto first = SceneList[0]->getComponent<cRigidDomino>();
-		//first->AddAngularForce({ 25, 25, 25 });
-		//first->AddLinearImpulse({ 0, 0, 25 });
 		first->AddLinearForce({ 0, 0, 250 });
-
-
-		/*for (auto &e : SceneList)
-		{
-		auto b = e->getComponent<cRigidDomino>();
-
-		if (b != NULL)
-		{
-		b->AddAngularForce({ 0, 50, 0.0 });
-		}
-		}*/
 	}
 
 	//trying to figure out how to make the domino tip properly
 	if (glfwGetKey(renderer::get_window(), GLFW_KEY_K) && Pause == false)
 	{
 		auto first = SceneList[0]->getComponent<cRigidDomino>();
-		//first->AddLinearForce({ 0, 0, -50 });
 		first->AddAngularForce({ -20, 0, 0 });
-		//first->angVelocity += ( -20, 0, 0 );
 	}
 
-
+	//Apply a linear force to make the object move along the Y axis when the BACKSPACE key is pressed (if pause isn't active)
 	if (glfwGetKey(renderer::get_window(), GLFW_KEY_BACKSPACE) && Pause == false)
 	{
 		auto first = SceneList[0]->getComponent<cRigidDomino>();
-		//first->AddAngularForce({ 25, 25, 25 });
-		//first->AddLinearImpulse({ 0, 0, 25 });
 		first->AddLinearForce({ 0, 250, 0 });
 	}
 
+	//Apply a linear force to make the object move along the Y axis when the ENTER key is pressed (if pause isn't active)
 	if (glfwGetKey(renderer::get_window(), GLFW_KEY_ENTER) && Pause == false)
 	{
 		auto first = SceneList[0]->getComponent<cRigidDomino>();
-		//first->AddAngularForce({ 25, 25, 25 });
-		//first->AddLinearImpulse({ 0, 0, 25 });
 		first->AddLinearForce({ 0, -250, 0 });
 	}
 
 
 
-
+	//Set pause to true if SPACE is pressed and let the console know how to resume the physics
 	if (glfwGetKey(renderer::get_window(), GLFW_KEY_SPACE))
 	{
 		if (Pause == false)
@@ -236,6 +195,7 @@ bool update(float delta_time) {
 		}
 	}
 
+	//Set pause to false if R is pressed and let the console know that it has been resumed
 	if (glfwGetKey(renderer::get_window(), GLFW_KEY_R))
 	{
 		if (Pause == true)
@@ -245,6 +205,7 @@ bool update(float delta_time) {
 		}
 	}
 
+	//If pause isn't activated, update the physics
 	if (Pause == false)
 	{
 		while (accumulator > physics_tick)
@@ -255,7 +216,7 @@ bool update(float delta_time) {
 		}
 	}
 
-
+	//Move the target cam (and switch to it if currently in freecam)
 	if (glfwGetKey(renderer::get_window(), GLFW_KEY_1))
 	{
 		Cam = 0;
@@ -263,24 +224,31 @@ bool update(float delta_time) {
 		targetcam.set_position(vec3(-20, 10, 10));
 	}
 
+	//Move the target cam (and switch to it if currently in freecam)
 	if (glfwGetKey(renderer::get_window(), GLFW_KEY_2))
 	{
 		Cam = 0;
 		targetcam.set_target(vec3(15, 0, -25));
 		targetcam.set_position(vec3(-80, 10, 10));
 	}
+
+	//Move the target cam (and switch to it if currently in freecam)
 	if (glfwGetKey(renderer::get_window(), GLFW_KEY_3))
 	{
 		Cam = 0;
 		targetcam.set_target(vec3(15, 0, -25));
 		targetcam.set_position(vec3(-80, 70, 10));
 	}
+
+	//Move the target cam (and switch to it if currently in freecam)
 	if (glfwGetKey(renderer::get_window(), GLFW_KEY_4))
 	{
 		Cam = 0;
 		targetcam.set_target(vec3(15, 0, -25));
 		targetcam.set_position(vec3(-45, 30, 10));
 	}
+
+	//Move the target cam (and switch to it if currently in freecam)
 	if (glfwGetKey(renderer::get_window(), GLFW_KEY_5))
 	{
 		Cam = 0;
@@ -288,7 +256,7 @@ bool update(float delta_time) {
 		targetcam.set_position(vec3(-80, 10, 90));
 	}
 
-	//if 0 is pressed initialise freecam **not initialised yet
+	//if 0 is pressed initialise freecam 
 	if (glfwGetKey(renderer::get_window(), GLFW_KEY_0))
 	{
 		Cam = 1;
@@ -365,6 +333,7 @@ bool update(float delta_time) {
 		targetcam.update(delta_time);
 	}
 
+	//If pause isn't activated, update the physics of the objects in the scene
 	if (Pause == false)
 	{
 		for (auto &e : SceneList)
@@ -380,6 +349,7 @@ bool update(float delta_time) {
 
 bool render()
 {
+	//Render all objects in the scene
 	for (auto &e : SceneList) 
 	{
 		e->Render();

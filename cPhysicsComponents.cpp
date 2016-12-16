@@ -158,4 +158,6 @@ void cCollider::Update(double delta) {}
 cSphereCollider::cSphereCollider() : radius(1.0), cCollider("SphereCollider") {}
 cPlaneCollider::cPlaneCollider() : normal(dvec3(0, 1, 0)), cCollider("PlaneCollider") {}
 cBoxCollider::cBoxCollider() : radius(1), cCollider("BoxCollider") {}
+//Setting the height of a domino collider to 2 (the same as the object) causes it to float above the plane.
+//Setting it to 1 makes it sit nicely on the plane but obviously the collider will only cover half the object
 cDominoCollider::cDominoCollider() : width(1), height(2), depth(0.5), cCollider("DominoCollider") {}

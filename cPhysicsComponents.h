@@ -60,6 +60,7 @@ public:
 class cRigidDomino : public cRigidBody
 {
 public:
+	//Each object of cRigidDomino type must have a width, height and depth (rather than radius used everywhere else)
 	double width = 1;
 	double height = 2;
 	double depth = 0.5;
@@ -105,20 +106,11 @@ private:
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 class cDominoCollider : public cCollider {
 public:
-	//double radius;
+	//Domino colliders must have a width, height, and depth values,
 	double width;
 	double height;
 	double depth;
 
-	/*vec3 MinX;
-	vec3 MinY;
-	vec3 MinZ;
-
-	vec3 MaxX;
-	vec3 MaxY;
-	vec3 MaxZ;*/
-	//double radius[3] = { xradius, yradius, zradius };
-	//Point c; //center point of bounding box
 	cDominoCollider();
 
 private:
