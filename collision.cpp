@@ -128,22 +128,22 @@ bool IsCollidingCheck(std::vector<collisionInfo> &civ, const cDominoCollider &c1
 	const double sumZ = c1.depth + c2.depth;
 	
 	//Get the minimum and maximum X, Y and Z values of each collider
-	double MinX1 = c1.GetParent()->GetPosition().x - (c1.width / 2);
-	double MinY1 = c1.GetParent()->GetPosition().y - (c1.height / 2);
-	double MinZ1 = c1.GetParent()->GetPosition().z - (c1.depth / 2);
+	double MinX1 = c1.GetParent()->GetPosition().x - (c1.width);
+	double MinY1 = c1.GetParent()->GetPosition().y - (c1.height);
+	double MinZ1 = c1.GetParent()->GetPosition().z - (c1.depth);
 
-	double MaxX1 = c1.GetParent()->GetPosition().x + (c1.width / 2);
-	double MaxY1 = c1.GetParent()->GetPosition().y + (c1.height / 2);
-	double MaxZ1 = c1.GetParent()->GetPosition().z + (c1.depth / 2);
+	double MaxX1 = c1.GetParent()->GetPosition().x + (c1.width);
+	double MaxY1 = c1.GetParent()->GetPosition().y + (c1.height);
+	double MaxZ1 = c1.GetParent()->GetPosition().z + (c1.depth);
 
 
-	double MinX2 = c2.GetParent()->GetPosition().x - (c2.width / 2);
-	double MinY2 = c2.GetParent()->GetPosition().y - (c2.height / 2);
-	double MinZ2 = c2.GetParent()->GetPosition().z - (c2.depth / 2);
+	double MinX2 = c2.GetParent()->GetPosition().x - (c2.width);
+	double MinY2 = c2.GetParent()->GetPosition().y - (c2.height);
+	double MinZ2 = c2.GetParent()->GetPosition().z - (c2.depth);
 
-	double MaxX2 = c2.GetParent()->GetPosition().x + (c2.width / 2);
-	double MaxY2 = c2.GetParent()->GetPosition().y + (c2.height / 2);
-	double MaxZ2 = c2.GetParent()->GetPosition().z + (c2.depth / 2);
+	double MaxX2 = c2.GetParent()->GetPosition().x + (c2.width);
+	double MaxY2 = c2.GetParent()->GetPosition().y + (c2.height);
+	double MaxZ2 = c2.GetParent()->GetPosition().z + (c2.depth);
 
 
 	if (MaxX1 < MinX2 || MinX1 > MaxX2)
